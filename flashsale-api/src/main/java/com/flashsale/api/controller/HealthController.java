@@ -14,14 +14,4 @@ public class HealthController {
         return "OK";
     }
 
-    private final StockService stockService;
-    //Constructor injection
-    public HealthController(StockService stockService){
-        this.stockService=stockService;
-    }
-
-    @GetMapping("/test-buy")
-    public String testBuy(){
-        return stockService.tryBuy("iphone15") ? "SUCCESS" : "SOLD OUT";
-    }
 }
