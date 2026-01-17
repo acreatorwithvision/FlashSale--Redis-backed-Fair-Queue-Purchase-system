@@ -6,16 +6,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.flashsale.api.kafka.PurchaseEventPublisher;
+
 
 //Handles purchase limit during flash sale
+
 @RestController
 public class PurchaseController {
 
     private final StockService stockService;
-
+    private final PurchaseEventPublisher eventPublisher;
     // Constructor injection ensures the dependency is explicit and immutable
-    public PurchaseController(StockService stockService) {
+    public PurchaseController(StockService stockService, PurchaseEventPublisher eventPublisher) {
         this.stockService = stockService;
+        this.eventPublisher=eventPublisher;
     }
 
     /**
@@ -34,6 +38,7 @@ public class PurchaseController {
 
         // 200 OK when purchase succeeds
         if (success) {
+            eventPublisher.publish(userId, itemId);
             return ResponseEntity.ok("Purchase successful");
         }
 
